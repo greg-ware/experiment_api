@@ -28,7 +28,7 @@ async def read_item(item_id: int, q: Optional[str] = None, delay: Optional[int]=
 if __name__ == "__main__":
     # logging.basicConfig(level=logging.INFO,force=True)
 
-    import uvicorn
+    import uvicorn, os
     
     uvicornFmter=uvicorn.logging.DefaultFormatter(use_colors=True,fmt='%(levelprefix)s %(message)s')
 
@@ -39,4 +39,6 @@ if __name__ == "__main__":
     logger.info("Logging info")
     logger.error("Logging error")
 
-    uvicorn.run(app, host="0.0.0.0", port=8002)
+    api_port=os.environ.get('API_PORT','8002')
+
+    uvicorn.run(app, host="0.0.0.0", port=int(api_port))

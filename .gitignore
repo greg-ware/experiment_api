@@ -3,3 +3,5 @@ results.xml
 api_impl/__pycache__/*
 experiment_api_phg.egg-info/*
 dist/*
+Pipfile.lock*
+*.pyc
