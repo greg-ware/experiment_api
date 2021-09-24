@@ -1,3 +1,5 @@
 results.xml
 .vscode/settings.json
 api_impl/__pycache__/*
+experiment_api_phg.egg-info/*
+dist/*

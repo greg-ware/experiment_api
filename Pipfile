@@ -12,6 +12,7 @@ pipenv = "*"
 pytest = "*"
 requests = "*"
 pylint = "*"
+build = "*"
 
 [requires]
 python_version = "3.9"

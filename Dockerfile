@@ -1,37 +1,15 @@
 # Install the base requirements for the app.
 # This stage is to support development.
+
+# Use an image with latest python
 FROM python:alpine AS base
 WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
 
-# Run tests to validate app
-FROM node:12-alpine AS app-base
-RUN apk add --no-cache python g++ make
-WORKDIR /app
-COPY app/package.json app/yarn.lock ./
-RUN yarn install
-COPY app/spec ./spec
-COPY app/src ./src
-RUN yarn test
+# get the requirements and install them
+COPY dist/experiment_api_phg-0.0.1-py3-none-any.whl .
+RUN pip install experiment_api_phg-0.0.1-py3-none-any.whl
 
-# Clear out the node_modules and create the zip
-FROM app-base AS app-zip-creator
-RUN rm -rf node_modules && \
-    apk add zip && \
-    zip -r /app.zip /app
+EXPOSE 8002
 
-# Dev-ready container - actual files will be mounted in
-FROM base AS dev
-CMD ["mkdocs", "serve", "-a", "0.0.0.0:8000"]
+CMD ["python", "-m", "api_impl.main"]
 
-# Do the actual build of the mkdocs site
-FROM base AS build
-COPY . .
-RUN mkdocs build
-
-# Extract the static content from the build
-# and use a nginx image to serve the content
-FROM nginx:alpine
-COPY --from=app-zip-creator /app.zip /usr/share/nginx/html/assets/app.zip
-COPY --from=build /app/site /usr/share/nginx/html
